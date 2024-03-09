@@ -5,7 +5,7 @@ import (
 	"regexp"
 )
 
-func parse(line, inputPattern string) (map[string]string, error) {
+func Parse(line, inputPattern string) (map[string]string, error) {
 	// First, dynamically replace placeholders in the input pattern with regex patterns.
 	placeholderPattern := regexp.MustCompile(`%(\w+)`)
 	// For each placeholder found, replace it with a regex named capture group.
