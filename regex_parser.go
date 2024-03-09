@@ -3,13 +3,18 @@ package regex_parser
 import (
 	"fmt"
 	"regexp"
+	"strings"
 )
 
 func Parse(line, inputPattern string) (map[string]string, error) {
-	// First, dynamically replace placeholders in the input pattern with regex patterns.
+	// Escape parentheses in the input pattern to ensure they are treated as literal characters in the regex.
+	escapedPattern := strings.ReplaceAll(inputPattern, "(", `\(`)
+	escapedPattern = strings.ReplaceAll(escapedPattern, ")", `\)`)
+
+	// Dynamically replace placeholders in the escaped pattern with regex patterns for capturing groups.
 	placeholderPattern := regexp.MustCompile(`%(\w+)`)
-	// For each placeholder found, replace it with a regex named capture group.
-	regexPattern := placeholderPattern.ReplaceAllString(inputPattern, `(?P<$1>[^,)]+)`)
+	regexPattern := placeholderPattern.ReplaceAllString(escapedPattern, `(?P<$1>[^,)]+)`)
+
 
 	// Compile the final regex pattern.
 	re, err := regexp.Compile(regexPattern)
